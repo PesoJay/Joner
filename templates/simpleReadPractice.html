@@ -5,10 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pitch Detection</title>
   <link href="{{ url_for('static', filename='styles/style.css')}}" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/vexflow/releases/vexflow-min.js"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
 </head>
 <body>
   <h1>Display Practice Notes/Chords here</h1>
-  <button onclick="window.location.href = 'index' ;">Back</button>
-
+  <div id="note-container"></div>
+  <button id="new-note-button" onclick="renderRandomNote()">New Note</button>
+  <button id="back-button" onclick="window.location.href = 'index' ;">Back</button>
 </body>
 </html>
