@@ -42,6 +42,10 @@ def index():
 def simple_read_practice():
     return render_template('simpleReadPractice.html')
 
+@app.route('/fullReadPractice')
+def full_read_practice():
+    return render_template('fullReadPractice.html')
+
 @socketio.on('start_audio_stream')
 def start_audio_stream():
     socketio.start_background_task(target=audio_stream)
