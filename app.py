@@ -27,26 +27,26 @@ def audio_stream():
             else:
                 note = None
             if note:
-                socketio.emit('note_detected', {'note': note})
+                socketio.emit("note_detected", {"note": note})
     finally:
         stream.stop_stream()
         stream.close()
         p.terminate()
 
-@app.route('/')
-@app.route('/index')
+@app.route("/")
+@app.route("/index")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
-@app.route('/simpleReadPractice')
+@app.route("/simpleReadPractice")
 def simple_read_practice():
-    return render_template('simpleReadPractice.html')
+    return render_template("simpleReadPractice.html")
 
-@app.route('/fullReadPractice')
+@app.route("/fullReadPractice")
 def full_read_practice():
-    return render_template('fullReadPractice.html')
+    return render_template("fullReadPractice.html")
 
-@socketio.on('start_audio_stream')
+@socketio.on("start_audio_stream")
 def start_audio_stream():
     socketio.start_background_task(target=audio_stream)
 
