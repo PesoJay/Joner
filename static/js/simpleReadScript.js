@@ -7,8 +7,16 @@ let isPaused = false;
 const noteContainer = document.getElementById("note-container");
 
 const socket = io();
+window.addEventListener("beforeunload", () => {
+    socket.emit("stop_audio_stream");
+});
 socket.emit("start_audio_stream");
 
+socket.on("note_detected", (data) => {
+    if(!isPaused){
+        handleNote(data);
+    }
+});
 
 function getRandomNote(previousNote) {
     let newNote = "";
@@ -38,12 +46,6 @@ function renderNotes(currentNotes) {
 randomNote = "C";
 const currentNotes = [randomNote];
 renderNotes(currentNotes);
-
-socket.on("note_detected", (data) => {
-    if(!isPaused){
-        handleNote(data);
-    }
-});
 
 function handleNote(data) {
     detectedNote = data.note;
