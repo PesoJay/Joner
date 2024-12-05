@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
     const notes = ["C,", "^C,", "D,", "^D,", "E,", "F,", "^F,", "G,", "^G,", "A,", "^A,", "B,", "C", "^C", "D", "^D", "E", "F", "^F", "G", "^G", "A", "^A", "B"];
-    let currentNote = "";
     const noteContainer = document.getElementById("note-container");
     const highlightBox = document.getElementById("highlightBox");
     const startStopButton = document.getElementById("start-stop-button");
@@ -10,21 +9,24 @@ document.addEventListener("DOMContentLoaded", () => {
     let eventCounter = 0;
     let startTime = 0;
     let latency = 450; //set this to the latency test result
+    let abcString = "X:1\nT:Example\nM:4/4\nL:1/8\nQ:1/4=60\nK:Cmaj\n";
+    let randomlyGeneratedMusic = "C2 D2 E2 F2|"; //replace with result from etudes-generator
+    const socket = io();
+    let visualObj = null;
 
     let practiceStates = [];
 
     class PracticeState {
         constructor(event) {
             this.event = event;
-            this.detectedNotes = [];
+            this.detectedNotes = new Map();
+            this.playedNote = "";
             this.expectedNote = getExpectedNote(event);
             this.eventStartTime = event.milliseconds;
-            this.accuracy = 0;
         }
     }
 
-    let abcString = "X:1\nT:Example\nM:4/4\nL:1/8\nQ:1/4=60\nK:Cmaj\n";
-    let randomlyGeneratedMusic = "C2 D2 E2 F2|";
+    setUp();
 
     document.addEventListener('keydown', event => {
         if (event.code === 'Space') {
@@ -33,41 +35,28 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    const socket = io();
     window.addEventListener("beforeunload", () => {
         socket.emit("stop_audio_stream");
     });
+
     socket.on("note_detected", (data) => {
         if (!isPaused && !isFinished) {
             if(noteWasPlayedDuringCurrentEvent()){
-                practiceStates[eventCounter].detectedNotes.push(data.note);
+                addToDetectedNotes(data.note, eventCounter);
             } else {
                 if(eventCounter - 1 >= 0){
-                    practiceStates[eventCounter - 1].detectedNotes.push(data.note);
+                    addToDetectedNotes(data.note, eventCounter-1);
                 }
             }
         }
     });
 
-    function noteWasPlayedDuringCurrentEvent() {
-        let now = Date.now();
-        let noteTime = timeSinceStart(now);
-        return (practiceStates[eventCounter].eventStartTime + latency) < noteTime;
-    }
-
-    abcString += randomlyGeneratedMusic;
-    const visualObj = ABCJS.renderAbc(noteContainer.id, abcString, {
-        add_classes: true,
-        staffwidth: 500
-    });
-
-    highlightBox.style.display = "block";
-    noteContainer.appendChild(highlightBox);
-
     const timingCallbacks = new ABCJS.TimingCallbacks(visualObj[0], {
         eventCallback: (ev) => {
             if (!firstEvent) {
                 console.log(practiceStates[eventCounter]);
+                practiceStates[eventCounter].playedNote = getPlayedNote(practiceStates[eventCounter].detectedNotes);
+                colorNote(practiceStates[eventCounter]);
                 eventCounter++;
                 //fixate last note
             }
@@ -84,6 +73,44 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    function colorNote(state){
+        let color = "red";
+        if (isPlayedNoteCorrect(state)){
+            color = "green";
+        }
+        state.event.elements[0][0].style.color = color;
+    }
+
+    function isPlayedNoteCorrect(state) {
+        return state.expectedNote === state.playedNote;
+    }
+
+    function addToDetectedNotes(note, index){
+        let count = 0;
+        if(practiceStates[index].detectedNotes.has(note)){
+            count = practiceStates[index].detectedNotes.get(note);
+        }
+        count++;
+        practiceStates[index].detectedNotes.set(note, count);
+    }
+
+    function noteWasPlayedDuringCurrentEvent() {
+        let now = Date.now();
+        let noteTime = timeSinceStart(now);
+        return (practiceStates[eventCounter].eventStartTime + latency) < noteTime;
+    }
+
+    function setUp(){
+        abcString += randomlyGeneratedMusic
+        visualObj = ABCJS.renderAbc(noteContainer.id, abcString, {
+            add_classes: true,
+            staffwidth: 500
+        });
+    
+        highlightBox.style.display = "block";
+        noteContainer.appendChild(highlightBox);
+    }
+
     function getExpectedNote(ev) {
         const startChar = ev.startChar;
         const endChar = ev.endChar;
@@ -91,6 +118,18 @@ document.addEventListener("DOMContentLoaded", () => {
         noteString = noteString.replace(/[0-9\/]/g, "");
         noteString = noteString.trim();
         return noteString;
+    }
+
+    function getPlayedNote(map) {
+        let mostCommonNote = "";
+        let mostCommonNoteCount = 0;
+        for(let [key, value] of map){
+            if(value > mostCommonNoteCount){
+                mostCommonNote = key;
+                mostCommonNoteCount = value;
+            }
+        }
+        return mostCommonNote;
     }
 
     function animateHighlightBox(ev) {
