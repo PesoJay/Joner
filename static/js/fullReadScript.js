@@ -8,9 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let firstEvent = true;
     let eventCounter = 0;
     let startTime = 0;
-    let latency = 450; //set this to the latency test result
+    let latency = 400; //set this to the latency test result
     let abcString = "X:1\nT:Example\nM:4/4\nL:1/8\nQ:1/4=60\nK:Cmaj\n";
-    let randomlyGeneratedMusic = "C2 D2 E2 F2|"; //replace with result from etudes-generator
+    let randomlyGeneratedMusic = "C D E F| F E D C|"; //replace with result from etudes-generator
     const socket = io();
     let visualObj = null;
 
@@ -41,41 +41,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
     socket.on("note_detected", (data) => {
         if (!isPaused && !isFinished) {
-            if(noteWasPlayedDuringCurrentEvent()){
-                addToDetectedNotes(data.note, eventCounter);
-            } else {
-                if(eventCounter - 1 >= 0){
-                    addToDetectedNotes(data.note, eventCounter-1);
-                }
-            }
+            let eventNoteWasPlayedInIndex = findEventNoteWasPlayedIn();
+            addToDetectedNotes(data.note, eventNoteWasPlayedInIndex);
         }
     });
+
+    function findEventNoteWasPlayedIn() {
+        for (let i = practiceStates.length-1; i >= 0; i--) {
+            if(noteWasPlayedDuringEvent(i)){
+                return i;
+            }
+        }
+    }
 
     const timingCallbacks = new ABCJS.TimingCallbacks(visualObj[0], {
         eventCallback: (ev) => {
             if (!firstEvent) {
                 console.log(practiceStates[eventCounter]);
-                practiceStates[eventCounter].playedNote = getPlayedNote(practiceStates[eventCounter].detectedNotes);
-                colorNote(practiceStates[eventCounter]);
+                let lastEventIndex = eventCounter;
+                gradeNote(lastEventIndex);
                 eventCounter++;
-                //fixate last note
             }
             if (ev != null) {
                 animateHighlightBox(ev);
                 let state = new PracticeState(ev);
                 practiceStates[eventCounter] = state;
             } else {
-                isPaused = true;
-                isFinished = true;
-                startStopButton.innerHTML = "Restart";
+                finishPractice();
             }
             firstEvent = false;
         }
     });
 
-    function colorNote(state){
+    function gradeNote(index){
+        setTimeout(() => {
+            practiceStates[index].playedNote = getPlayedNote(practiceStates[index].detectedNotes);
+            let noteIsCorrect = isPlayedNoteCorrect(practiceStates[index]);
+            colorNote(practiceStates[index], noteIsCorrect); //for now just colors the note red or green, may be able to extend to show actually played notes as well    
+        }, latency);
+    }
+
+    function colorNote(state, noteIsCorrect){
         let color = "red";
-        if (isPlayedNoteCorrect(state)){
+        if (noteIsCorrect){
             color = "green";
         }
         state.event.elements[0][0].style.color = color;
@@ -94,10 +102,10 @@ document.addEventListener("DOMContentLoaded", () => {
         practiceStates[index].detectedNotes.set(note, count);
     }
 
-    function noteWasPlayedDuringCurrentEvent() {
+    function noteWasPlayedDuringEvent(index) {
         let now = Date.now();
         let noteTime = timeSinceStart(now);
-        return (practiceStates[eventCounter].eventStartTime + latency) < noteTime;
+        return (practiceStates[index].eventStartTime + latency) < noteTime;
     }
 
     function setUp(){
@@ -123,13 +131,22 @@ document.addEventListener("DOMContentLoaded", () => {
     function getPlayedNote(map) {
         let mostCommonNote = "";
         let mostCommonNoteCount = 0;
+        let numberOfSamples = 0;
+
         for(let [key, value] of map){
+            numberOfSamples += value;
             if(value > mostCommonNoteCount){
                 mostCommonNote = key;
                 mostCommonNoteCount = value;
             }
         }
-        return mostCommonNote;
+        if(mostCommonNoteCount < 3){
+            return "z"; //Assumes player didn't play during event, so returns a rest
+        }
+        if(mostCommonNoteCount / numberOfSamples > 0.5){
+            return mostCommonNote;
+        }
+        return "inaccurate result";
     }
 
     function animateHighlightBox(ev) {
@@ -154,6 +171,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function resetPracticeSession() {
         isPaused = false;
+        isFinished = false;
+        practiceStates.forEach(state => {
+            state.event.elements[0][0].style.color = "black";
+        });
         practiceStates = [];
         eventCounter = 0;
         firstEvent = true;
@@ -171,6 +192,14 @@ document.addEventListener("DOMContentLoaded", () => {
         timingCallbacks.pause();
         isPaused = true;
         startStopButton.innerHTML = "Resume";
+    }
+
+    function finishPractice() {
+        setTimeout(() => {
+            isPaused = true;
+            isFinished = true;
+            startStopButton.innerHTML = "Restart";
+        }, latency);
     }
 
     function timeSinceStart(now) {
