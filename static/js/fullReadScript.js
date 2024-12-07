@@ -9,8 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let eventCounter = 0;
     let startTime = 0;
     let latency = 400; //set this to the latency test result
-    let abcString = "X:1\nT:Example\nM:4/4\nL:1/8\nQ:1/4=60\nK:Cmaj\n";
-    let randomlyGeneratedMusic = "C D E F| F E D C|"; //replace with result from etudes-generator
+    let abcString = noteContainer.textContent;
+    //let abcString = "X:1\nT:Example\nM:4/4\nL:1/8\nQ:1/4=60\nK:Cmaj\n";
+    //let randomlyGeneratedMusic = "C D E F| F E D C|"; //replace with result from etudes-generator
     const socket = io();
     let visualObj = null;
 
@@ -41,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     socket.on("note_detected", (data) => {
         if (!isPaused && !isFinished) {
+            console.log("note detected!");
             let eventNoteWasPlayedInIndex = findEventNoteWasPlayedIn();
             addToDetectedNotes(data.note, eventNoteWasPlayedInIndex);
         }
@@ -109,14 +111,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function setUp(){
-        abcString += randomlyGeneratedMusic
+        abcString = cleanGeneratedAbcString(abcString);
         visualObj = ABCJS.renderAbc(noteContainer.id, abcString, {
             add_classes: true,
-            staffwidth: 500
+            staffwidth: 500,
+            wrap: {
+                minSpacing: 1.5,
+                maxSpacing: 5,
+                preferredMeasuresPerLine: 5
+            },
         });
     
         highlightBox.style.display = "block";
         noteContainer.appendChild(highlightBox);
+    }
+
+    function cleanGeneratedAbcString(abc) {
+        abc = abc.replace(/[()]/g, "");
+        return abc;
     }
 
     function getExpectedNote(ev) {

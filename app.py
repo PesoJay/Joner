@@ -1,7 +1,11 @@
-from flask import Flask, render_template
+from flask import Flask, redirect, url_for, render_template, request
+from etude import Etude
+from abc_converter import convert_to_abc
+from generator import Generator
 from flask_socketio import SocketIO, emit
 import pyaudio
 import numpy as np
+from random import choice
 from utils import *
 from yinPitchDetection import *
 
@@ -10,6 +14,7 @@ is_streaming = False
 
 app = Flask(__name__)
 socketio = SocketIO(app)
+etude: Etude = Etude()
 
 def audio_stream():
     global is_streaming
@@ -56,7 +61,22 @@ def simple_read_practice():
 
 @app.route("/fullReadPractice")
 def full_read_practice():
-    return render_template("fullReadPractice.html")
+    global etude
+    etude.title = ""
+    etude.focus = "air_column"
+    etude.length = "2"
+    etude.set_tempo(choice(["very_slow"]))
+    etude.metre = "4/4"
+    mode = "maj"
+    key = "C"
+    etude.set_key(key, mode)
+    etude.ambitus = [0, 10]
+    generator: Generator = Generator(etude)
+    etude = generator.generate_etude()
+    abc: str = convert_to_abc(etude)
+    print("\n", abc, "\n")
+
+    return render_template("fullReadPractice.html", abc=abc)
 
 @socketio.on("start_audio_stream")
 def start_audio_stream():
