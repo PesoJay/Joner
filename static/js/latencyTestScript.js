@@ -10,10 +10,11 @@ window.addEventListener("beforeunload", () => {
 
 socket.on("note_detected", (data) => {
     if(testRunning){
-    console.log(`Detected Note: ${data.note}`);
+        console.log(`Detected Note: ${data.note}`);
         endTime = Date.now()
         testRunning = false;
         document.getElementById("latency-counter").textContent = endTime - startTime;
+        socket.emit("stop_audio_stream");  
     }
 });
 

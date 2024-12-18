@@ -13,37 +13,77 @@ current_audio_task = None
 is_streaming = False
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='threading', ping_timeout=1, ping_interval=1)
 etude: Etude = Etude()
+
+def callback(in_data, frame_count, time_info, status):
+    global is_streaming
+    
+    if not is_streaming:
+        return (None, pyaudio.paComplete)
+    
+    data = np.frombuffer(in_data, dtype=np.float32)
+    rms = np.sqrt(np.mean(np.square(data)))
+    
+    if rms > 0.01:
+        frequency = get_pitch_yin(data, SAMPLE_RATE)
+        if frequency:
+            note = find_nearest_note(frequency)
+            if note: 
+                socketio.emit("note_detected", {"note": note}, namespace='/')
+    
+    return (in_data, pyaudio.paContinue)
 
 def audio_stream():
     global is_streaming
     p = pyaudio.PyAudio()
     
-    stream = p.open(
-        format=pyaudio.paFloat32,
-        channels=1,
-        rate=SAMPLE_RATE,
-        input=True,
-        frames_per_buffer=CHUNK,
-    )
     try:
+        stream = p.open(
+            format=pyaudio.paFloat32,
+            channels=1,
+            rate=SAMPLE_RATE,
+            input=True,
+            frames_per_buffer=CHUNK,
+            stream_callback=callback,
+            input_device_index=None
+        )
+        
+        stream.start_stream()
+        
         while is_streaming:
-            data = np.frombuffer(stream.read(CHUNK, exception_on_overflow=False), dtype=np.float32)
-            frequency = get_pitch_yin(data, SAMPLE_RATE)
-            if frequency:
-                note = find_nearest_note(frequency)
-            else:
-                note = None
-            if note:
-                socketio.emit("note_detected", {"note": note})
-            socketio.sleep(0)  # Allow other tasks to run
-    finally:
+            socketio.sleep(0.1)
+        
         stream.stop_stream()
         stream.close()
+    except Exception as e:
+        print(f"Audio stream error: {e}")
+    finally:
         p.terminate()
         is_streaming = False
-        print("Audio stream stopped")  # Debug print
+        print("Audio stream stopped")
+
+@socketio.on("start_audio_stream")
+def start_audio_stream():
+    global current_audio_task, is_streaming
+    print("Started Audio Stream")
+    
+    if is_streaming:
+        print("Audio Stream already running")
+        return
+    
+    is_streaming = True
+    current_audio_task = socketio.start_background_task(target=audio_stream)
+
+@socketio.on("stop_audio_stream")
+def stop_audio_stream():
+    global is_streaming, current_audio_task
+    is_streaming = False
+    
+    socketio.sleep(0.5)
+    
+    current_audio_task = None
+    print("Stop audio stream requested")
 
 
 @app.route("/")
@@ -97,4 +137,4 @@ def stop_audio_stream():
     print("Stop audio stream requested")
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=5000)
+    socketio.run(app, host="0.0.0.0", port=5000, debug=True, use_reloader=False)
