@@ -8,10 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
     let firstEvent = true;
     let eventCounter = 0;
     let startTime = 0;
-    let latency = 0; //set this to the latency test result
-    let abcString = noteContainer.textContent;
-    //let abcString = "X:1\nT:Example\nM:4/4\nL:1/8\nQ:1/4=60\nK:Cmaj\n";
-    //let randomlyGeneratedMusic = "C D E F| F E D C|"; //replace with result from etudes-generator
+    let pauseStartTime = 0;
+    let totalPauseDuration = 0;
+    let latency = 100; //set this to the latency test result
+    //let abcString = noteContainer.textContent;
+    let abcString = "X:1\nT:Example\nM:4/4\nL:1/4\nQ:1/4=60\nK:Cmaj\n";
+    let randomlyGeneratedMusic = "C D E F| F E D C|"; //replace with result from etudes-generator
     const socket = io();
     let visualObj = null;
 
@@ -31,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.addEventListener('keydown', event => {
         if (event.code === 'Space') {
-            startTime = Date.now();
             startStopPractice();
         }
     });
@@ -111,8 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function setUp(){
-        abcString = cleanGeneratedAbcString(abcString);
-        //abcString = abcString + randomlyGeneratedMusic; //remove for actual random music
+        //abcString = cleanGeneratedAbcString(abcString);
+        abcString = abcString + randomlyGeneratedMusic; //remove for actual random music
         visualObj = ABCJS.renderAbc(noteContainer.id, abcString, {
             add_classes: true,
             staffwidth: 500,
@@ -191,9 +192,15 @@ document.addEventListener("DOMContentLoaded", () => {
         practiceStates = [];
         eventCounter = 0;
         firstEvent = true;
+        totalPauseDuration = 0;
     }
 
     function startPractice() {
+        if(firstEvent){
+            startTime = Date.now();
+        } else {
+            totalPauseDuration += Date.now() - pauseStartTime;
+        }
         socket.emit("start_audio_stream");
         isPaused = false;
         highlightBox.style.display = "block";
@@ -202,6 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function pausePractice() {
+        pauseStartTime = Date.now();
         timingCallbacks.pause();
         isPaused = true;
         startStopButton.innerHTML = "Resume";
@@ -216,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function timeSinceStart(now) {
-        return now - startTime;
+        return now - startTime - totalPauseDuration;
     }
 
     startStopButton.onclick = startStopPractice;
