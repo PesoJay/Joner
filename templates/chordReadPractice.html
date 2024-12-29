@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chord Detection</title>
+    <link href="{{ url_for('static', filename='styles/style.css')}}" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/abcjs-basic.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chordReadScript.js') }}" defer></script>
+</head>
+<body>
+    <p>Correct Chords: <span id="correct-counter">0</span></p>
+    <div id="note-container"></div>
+    <button id="back-button" onclick="window.location.href = 'index' ;">Back</button>
+</body>
+</html>

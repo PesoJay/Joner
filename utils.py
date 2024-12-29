@@ -2,7 +2,8 @@ from typing import Optional
 from etude import Note, Key
 from math import floor
 
-CHUNK = 512
+YIN_CHUNK = 512
+CHORD_CHUNK = 4096
 SAMPLE_RATE = 44100
 
 NOTES = {
@@ -12,7 +13,19 @@ NOTES = {
     "^F": 369.99, "G": 392.00, "^G": 415.30, "A": 440.00, "^A": 466.16, "B": 493.88,
     "c": 523.25, "^c": 554.37, "d": 587.33, "^d": 622.25, "e": 659.25, "f": 698.46,
     "^f": 739.99, "g": 783.99, "^g": 830.61, "a": 880.00, "^a": 932.33, "b": 987.77,
-    "c'": 1046.50
+    "c'": 1046.50, "^c'": 1108.73, "d'": 1174.66, "^d'": 1244.51, "e'": 1318.51,
+    "f'": 1396.91, "^f'": 1479.98, "g'": 1567.98, "^g'": 1661.22, "a'": 1760.00,
+    "^a'": 1864.66, "b'": 1975.53, "c''": 2093.00, "^c''": 2217.46
+}
+
+
+CHORD_PATTERNS = {
+    'major': [0, 4, 7],     
+    'minor': [0, 3, 7],     
+    'diminished': [0, 3, 6],
+    'augmented': [0, 4, 8], 
+    'sus4': [0, 5, 7],      
+    'sus2': [0, 2, 7],      
 }
 
 def find_nearest_note(frequency: float) -> Optional[str]:
@@ -29,6 +42,9 @@ def find_nearest_note(frequency: float) -> Optional[str]:
             nearest_note = note
     
     return nearest_note
+
+
+
 
 #Copied from Estudio - Martin Karanitsch
 
