@@ -124,7 +124,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 preferredMeasuresPerLine: 5
             },
         });
-    
         highlightBox.style.display = "block";
         noteContainer.appendChild(highlightBox);
     }
@@ -199,6 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function startPractice() {
         if(firstEvent){
             startTime = Date.now();
+            beatIndicator();
         } else {
             totalPauseDuration += Date.now() - pauseStartTime;
         }
@@ -222,6 +222,26 @@ document.addEventListener("DOMContentLoaded", () => {
             isFinished = true;
             startStopButton.innerHTML = "Restart";
         }, latency);
+    }
+
+    function beatIndicator() {
+        const beatsToPlay = visualObj[0].getBeatsPerMeasure()-1;
+        const beatLength = visualObj[0].millisecondsPerMeasure() / visualObj[0].getBeatsPerMeasure();
+        const beat = new Audio("/static/audio/countdown.wav");
+        let currentBeat = 0;
+
+        beat.play();
+
+        const interval = setInterval(() => {
+            if (currentBeat < beatsToPlay) {
+                console.log("Beat");
+                beat.currentTime = 0;
+                beat.play();
+                currentBeat++;
+            } else {
+                clearInterval(interval);
+            }
+        }, beatLength);
     }
 
     function timeSinceStart(now) {
