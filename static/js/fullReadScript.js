@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const timingCallbacks = new ABCJS.TimingCallbacks(visualObj[0], {
+        extraMeasuresAtBeginning: 1,
         eventCallback: (ev) => {
             if (!firstEvent) {
                 console.log(practiceStates[eventCounter]);
