@@ -1,8 +1,8 @@
+import { noteContainer, transposeInterval, socket, addEventListeners, transpose } from "./utils.js";
 document.addEventListener("DOMContentLoaded", () => {
-    const notes = ["C,", "^C,", "D,", "^D,", "E,", "F,", "^F,", "G,", "^G,", "A,", "^A,", "B,", "C", "^C", "D", "^D", "E", "F", "^F", "G", "^G", "A", "^A", "B"];
-    const noteContainer = document.getElementById("note-container");
     const highlightBox = document.getElementById("highlightBox");
     const startStopButton = document.getElementById("start-stop-button");
+    const beat = new Audio("/static/audio/countdown.wav");
     let isPaused = true;
     let isFinished = false;
     let firstEvent = true;
@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
     //let abcString = noteContainer.textContent;
     let abcString = "X:1\nT:Example\nM:4/4\nL:1/4\nQ:1/4=60\nK:Cmaj\n";
     let randomlyGeneratedMusic = "C D E F| F E D C|"; //replace with result from etudes-generator
-    const socket = io();
     let visualObj = null;
 
     let practiceStates = [];
@@ -45,7 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!isPaused && !isFinished) {
             console.log("note detected!");
             let eventNoteWasPlayedInIndex = findEventNoteWasPlayedIn();
-            addToDetectedNotes(data.note, eventNoteWasPlayedInIndex);
+            let transposedNote = transpose(data.note, transposeInterval);
+            addToDetectedNotes(transposedNote, eventNoteWasPlayedInIndex);
         }
     });
 
@@ -113,6 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function setUp(){
+        addEventListeners();
         //abcString = cleanGeneratedAbcString(abcString);
         abcString = abcString + randomlyGeneratedMusic; //remove for actual random music
         visualObj = ABCJS.renderAbc(noteContainer.id, abcString, {
@@ -227,16 +228,15 @@ document.addEventListener("DOMContentLoaded", () => {
     function beatIndicator() {
         const beatsToPlay = visualObj[0].getBeatsPerMeasure()-1;
         const beatLength = visualObj[0].millisecondsPerMeasure() / visualObj[0].getBeatsPerMeasure();
-        const beat = new Audio("/static/audio/countdown.wav");
         let currentBeat = 0;
 
+        beat.currentTime = 0;
         beat.play();
 
         const interval = setInterval(() => {
             if (currentBeat < beatsToPlay) {
-                console.log("Beat");
                 beat.currentTime = 0;
-                beat.play();
+                beat.play();    
                 currentBeat++;
             } else {
                 clearInterval(interval);

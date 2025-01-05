@@ -1,27 +1,26 @@
-const notes = ["F,", "^F,", "G,", "^G,", "A,", "^A,", "B,", "C", "^C", "D", "^D", "E", "F", "^F", "G", "^G", "A", "^A", "B", "c", "^c", "d", "^d", "e", "f", "^f", "g", "^g", "a", "^a", "b", "c'"];
+import { notes, noteContainer, transposeInterval, socket, addEventListeners, transpose } from "./utils.js";
 let randomNote = "";
 let detectedNote = "";
 let correctCounter = 0;
 let lastNotes = ["X", "X"];
 let isPaused = false;
-const noteContainer = document.getElementById("note-container");
-
-const socket = io();
-window.addEventListener("beforeunload", () => {
-    socket.emit("stop_audio_stream");
-});
+let validRandomNotes = notes.slice(17, notes.length - 8);
+addEventListeners();
 socket.emit("start_audio_stream");
-
 socket.on("note_detected", (data) => {
     if(!isPaused){
         handleNote(data);
     }
 });
 
+randomNote = "C";
+const currentNotes = [randomNote];
+renderNotes(currentNotes);
+
 function getRandomNote(previousNote) {
     let newNote = "";
     do {
-      newNote = notes[Math.floor(Math.random() * notes.length)];
+      newNote = validRandomNotes[Math.floor(Math.random() * validRandomNotes.length)];
     } while (newNote === previousNote);
     return newNote;
 }
@@ -41,14 +40,8 @@ function renderNotes(currentNotes) {
     });
 }
 
-
-
-randomNote = "C";
-const currentNotes = [randomNote];
-renderNotes(currentNotes);
-
 function handleNote(data) {
-    detectedNote = data.note;
+    detectedNote = transpose(data.note, transposeInterval);
     if(lastNotes.length > 2) {
         lastNotes.shift();
     }

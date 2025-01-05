@@ -1,19 +1,13 @@
-const notes = ["B,", "C", "^C", "D", "^D", "E", "F", "^F", "G", "^G", "A", "^A", "B", "c", "^c", "d", "^d", "e", "f", "^f", "g", "^g", "a", "^a", "b", "c'"];
+import { notes, noteContainer, transposeInterval, socket, addEventListeners, transpose } from "./utils.js";
 const chordTypes = ["major", "minor", "sus2", "sus4", "diminished", "augmented"];
 let randomChord = { root: "", type: "", notes: [] };
 let detectedChord = [];
 let correctCounter = 0;
 let isPaused = false;
-const noteContainer = document.getElementById("note-container");
 
-const socket = io();
-window.addEventListener("beforeunload", () => {
-    socket.emit("stop_audio_stream");
-});
+addEventListeners();
 socket.emit("start_audio_stream");
-
 socket.on("chord_detected", (data) => {
-    console.log("chord detected: " + data.chord);
     if (!isPaused) {
         handleChord(data);
     }
@@ -66,7 +60,9 @@ randomChord = getRandomChord();
 renderChord(randomChord);
 
 function handleChord(data) {
-    detectedChord = data.chord;
+    let transposedRoot = transpose(data["chord"][0], transposeInterval);
+    detectedChord = transposedRoot + data["chord"][1];
+    console.log(detectedChord);
     if (isChordAccurate(detectedChord)) {
         correctChordRoutine();
     } else {

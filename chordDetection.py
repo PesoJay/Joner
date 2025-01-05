@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.fftpack import fft
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from utils import NOTES, CHORD_PATTERNS, find_nearest_note
 
 def get_note_frequencies(data: np.ndarray, sample_rate: int, num_peaks: int = 6) -> List[float]:
@@ -64,7 +64,7 @@ def find_notes_in_chord(frequencies: List[float]) -> List[str]:
     
     return notes
 
-def identify_chord(notes: List[str]) -> Optional[str]:
+def identify_chord(notes: List[str]) -> Optional[Tuple[str, str]]:
     if len(notes) < 3:
         return None
         
@@ -86,6 +86,6 @@ def identify_chord(notes: List[str]) -> Optional[str]:
                 break
 
         if chord_found:
-            return root_note + chord_name
+            return root_note, chord_name
     
     return None

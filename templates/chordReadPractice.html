@@ -7,10 +7,38 @@
     <link href="{{ url_for('static', filename='styles/style.css')}}" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
     <script src="{{ url_for('static', filename='js/abcjs-basic.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/chordReadScript.js') }}" defer></script>
+    <script type="module" src="{{ url_for('static', filename='js/chordReadScript.js') }}" defer></script>
 </head>
 <body>
     <p>Correct Chords: <span id="correct-counter">0</span></p>
+    <label for="transpose-select">Transposition:</label>
+    <select id="transpose-select">
+        <option value="-12">C | Octave Down</option>
+        <option value="-11">C#/Db | 11 Semitones Down</option>
+        <option value="-10">D | 10 Semitones Down</option>
+        <option value="-9">D#/Eb | 9 Semitones Down</option>
+        <option value="-8">E | 8 Semitones Down</option>
+        <option value="-7">F | 7 Semitones Down</option>
+        <option value="-6">F#/Gb | 6 Semitones Down</option>
+        <option value="-5">G | 5 Semitones Down</option>
+        <option value="-4">G#/Ab | 4 Semitones Down</option>
+        <option value="-3">A | 3 Semitones Down</option>
+        <option value="-2">A#/Bb | 2 Semitones Down</option>
+        <option value="-1">B | 1 Semitone Down</option>
+        <option value="0" selected>No Transposition</option>
+        <option value="1">C#/Db | 1 Semitone Up</option>
+        <option value="2">D | 2 Semitones Up</option>
+        <option value="3">D#/Eb | 3 Semitones Up</option>
+        <option value="4">E | 4 Semitones Up</option>
+        <option value="5">F | 5 Semitones Up</option>
+        <option value="6">F#/Gb | 6 Semitones Up</option>
+        <option value="7">G | 7 Semitones Up</option>
+        <option value="8">G#/Ab | 8 Semitones Up</option>
+        <option value="9">A | 9 Semitones Up</option>
+        <option value="10">A#/Bb | 10 Semitones Up</option>
+        <option value="11">B | 11 Semitones Up</option>
+        <option value="12">C | Octave Up</option>
+    </select>
     <div id="note-container"></div>
     <button id="back-button" onclick="window.location.href = 'index' ;">Back</button>
 </body>
