@@ -15,7 +15,7 @@
         <div id="logo" class="logo"></div>
     </div>
     <div id="highlightBox"></div>
-    <label for="transpose-select">Transposition:</label>
+    <label id="transpose-select-label"for="transpose-select">Transposition:</label>
     <select id="transpose-select">
         <option value="-12">C | Octave Down</option>
         <option value="-11">C#/Db | 11 Semitones Down</option>
@@ -44,7 +44,7 @@
         <option value="12">C | Octave Up</option>
     </select>
     <div id="note-container">{{ abc }}</div>
-    <button id="start-stop-button">Start</button>
+    <div id="start-stop-button">Start</div>
     <div class="custom-button back-button" onclick="window.location.href = 'index' ;">
         <span>Back</span>
         <div class="music-sheet" id="back-button-music"></div>

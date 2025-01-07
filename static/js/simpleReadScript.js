@@ -28,7 +28,7 @@ function getRandomNote(previousNote) {
 }
 
 function renderNotes(currentNotes) {
-    let abcString = "X:1\nT:Note Practice\nM:4/4\nL:1/1\nK:C\n";
+    let abcString = "X:1\nM:4/4\nL:1/1\nK:C\n";
     abcString += "|[";
 
     currentNotes.forEach((note) => {
@@ -38,7 +38,7 @@ function renderNotes(currentNotes) {
 
     ABCJS.renderAbc(noteContainer.id, abcString, {
         add_classes: true,
-        scale: 4
+        scale: 6
     });
 }
 

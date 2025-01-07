@@ -97,14 +97,18 @@ def chord_read_practice():
     yin_mode = False
     return render_template("chordReadPractice.html")
 
+@app.route("/startFullReadPractice", methods=["GET", "POST"])
 @app.route("/fullReadPractice")
 def full_read_practice():
     global etude, yin_mode
+    if request.method == "POST":
+        etude.tempo = ["", request.form["tempo"]]
+    else:
+        etude.set_tempo(choice(["very_slow"]))
     yin_mode = True
     etude.title = ""
     etude.focus = "air_column"
     etude.length = "2"
-    etude.set_tempo(choice(["very_slow"]))
     etude.metre = "4/4"
     mode = "maj"
     key = "C"

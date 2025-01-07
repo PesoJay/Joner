@@ -24,6 +24,9 @@ body {
 }
 
 .container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text-align: center;
   margin-top: 20px;
   width: 100%;
@@ -35,6 +38,7 @@ body {
 }
 
 .introduction-heading {
+  font-weight: bold;
   font-size: larger;
 }
 
@@ -44,17 +48,17 @@ body {
 
 .button-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  justify-items: center;
-  align-items: center;
+  grid-template-columns: 22% 35% 22%;
+  grid-template-rows: 1fr 1fr;
+  row-gap: 20px;
+  justify-content: space-evenly;
   margin-top: 30px;
 }
 
 .custom-button {
     position: relative;
     padding: 20px;
-    font-size: 30px;
+    font-size: 33px;
     font-weight: bold;
     text-align: center;
     border: 2px solid #ddd;
@@ -63,10 +67,10 @@ body {
     cursor: pointer;
     transition: transform 0.2s ease;
     height: 150px;
-    width: 40%;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    justify-self: stretch;
     align-items: center;
 }
 
@@ -85,6 +89,21 @@ body {
 
 .custom-button:hover {
     transform: scale(1.05);
+}
+
+.tutorial-display {
+  grid-column: 2; /* Center column */
+  grid-row: span 2; /* Spans both rows */
+  background-color: #eaeaea;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  text-align: center;
+  overflow-y: auto;
+}
+
+.tutorial-display h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
 .simple-read {
@@ -107,6 +126,27 @@ body {
   color: black;
 }
 
+#score-board {
+  align-self: flex-start;
+  font-size: large;
+  background-color: #b6b6b0;
+  border: black 1px solid;
+  margin-left: 20px;
+}
+
+#transpose-select-label {
+  align-self: flex-start;
+  padding-top: 10px;
+  font-size: large;
+  margin-left: 20px;
+}
+
+#transpose-select {
+  align-self: flex-start;
+  font-size: large;
+  margin-left: 20px;
+}
+
 .back-button {
   bottom: 20px;
   left: 20px;
@@ -117,6 +157,16 @@ body {
   color: black;
 }
 
+#start-stop-button {
+  text-align: center;
+  align-content: center;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 50px;
+  background-color: #8a85c8;
+  width: 10%;
+  height: 7vh;
+}
 
 #note-container {
   position: relative;

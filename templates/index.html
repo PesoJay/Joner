@@ -25,19 +25,23 @@
         </fieldset>
         <br>
         <div class="button-grid">
-            <div class="custom-button simple-read" onclick="window.location.href = 'simpleReadPractice' ;">
+            <div class="custom-button simple-read" onclick="window.location.href = 'simpleReadPractice' ;" onmouseover="showTutorial('simpleReadPractice')">
                 <span>Simple Read Practice</span>
                 <div class="music-sheet" id="simple-read-music"></div>
             </div>
-            <div class="custom-button chord-read" onclick="window.location.href = 'chordReadPractice' ;">
+            <div class="tutorial-display" id="tutorial-display">
+                <h2>Hover over a button to see the tutorial</h2>
+                <div id="form-container"></div>
+            </div>
+            <div class="custom-button chord-read" onclick="window.location.href = 'chordReadPractice' ;" onmouseover="showTutorial('chordReadPractice')">
                 <span>Chord Read Practice</span>
                 <div class="music-sheet" id="chord-read-music"></div>
             </div>
-            <div class="custom-button full-read" onclick="window.location.href = 'fullReadPractice' ;">
+            <div class="custom-button full-read" onclick="window.location.href = 'fullReadPractice' ;" onmouseover="showTutorial('fullReadPractice')">
                 <span>Full Read Practice</span>
                 <div class="music-sheet" id="full-read-music"></div>
             </div>
-            <div class="custom-button latency-test" onclick="window.location.href = 'latencyTest' ;">
+            <div class="custom-button latency-test" onclick="window.location.href = 'latencyTest' ;" onmouseover="showTutorial('latencyTest')">
                 <span>Latency Test</span>
                 <div class="music-sheet" id="latency-test-music"></div>
             </div>
