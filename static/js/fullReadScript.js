@@ -119,13 +119,13 @@ document.addEventListener("DOMContentLoaded", () => {
         //abcString = abcString + randomlyGeneratedMusic; //remove for actual random music
         visualObj = ABCJS.renderAbc(noteContainer.id, abcString, {
             add_classes: true,
-            staffwidth: 1500,
+            staffwidth: 1000,
             wrap: {
                 minSpacing: 1.5,
                 maxSpacing: 5,
-                preferredMeasuresPerLine: 5
+                preferredMeasuresPerLine: 4
             },
-            responsive: "resize"
+            scale: 1.3
         });
         highlightBox.style.display = "block";
         noteContainer.appendChild(highlightBox);
@@ -167,10 +167,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function animateHighlightBox(ev) {
-        highlightBox.style.left = `${ev.left}px`;
-        highlightBox.style.top = `${ev.top}px`;
-        highlightBox.style.width = `${ev.width}px`;
-        highlightBox.style.height = `${ev.height}px`;
+        highlightBox.style.left = `${ev.left*1.3}px`;
+        highlightBox.style.top = `${ev.top*1.3}px`;
+        highlightBox.style.width = `${ev.width*1.3}px`;
+        highlightBox.style.height = `${ev.height*1.3}px`;
     }
 
     function startStopPractice() {
