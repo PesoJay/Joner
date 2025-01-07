@@ -25,3 +25,9 @@ export function transpose(note, interval) {
     let noteIndex = notes.indexOf(note);
     return notes[noteIndex+interval];
 }
+
+export function abcInBackButton() {
+    console.log("bingo");
+    let backButtonAbcContainer = document.getElementById("back-button-music");
+    ABCJS.renderAbc(backButtonAbcContainer, "X:1\nK:C\nz4 !D.C.!|]", { scale: 2});
+}

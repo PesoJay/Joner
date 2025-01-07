@@ -109,7 +109,7 @@ def full_read_practice():
     mode = "maj"
     key = "C"
     etude.set_key(key, mode)
-    etude.ambitus = [0, 10]
+    etude.ambitus = [0, 12]
     generator: Generator = Generator(etude)
     etude = generator.generate_etude()
     abc: str = convert_to_abc(etude)

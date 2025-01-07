@@ -1,11 +1,13 @@
-import { notes, noteContainer, transposeInterval, socket, addEventListeners, transpose } from "./utils.js";
+import { notes, noteContainer, transposeInterval, socket, addEventListeners, transpose, abcInBackButton } from "./utils.js";
+const validRandomNotes = notes.slice(17, notes.length - 8);
 let randomNote = "";
 let detectedNote = "";
 let correctCounter = 0;
 let lastNotes = ["X", "X"];
 let isPaused = false;
-let validRandomNotes = notes.slice(17, notes.length - 8);
+
 addEventListeners();
+abcInBackButton();
 socket.emit("start_audio_stream");
 socket.on("note_detected", (data) => {
     if(!isPaused){
@@ -36,7 +38,7 @@ function renderNotes(currentNotes) {
 
     ABCJS.renderAbc(noteContainer.id, abcString, {
         add_classes: true,
-        staffwidth: 500
+        scale: 4
     });
 }
 

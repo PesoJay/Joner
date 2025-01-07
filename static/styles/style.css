@@ -1,6 +1,121 @@
 body {
-  background-color: antiquewhite;
+  background-color: #e6e5de;
+  background-repeat: repeat;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
+.banner {
+  width: 100%;
+  height: 13vh;
+  border-radius: 10%;
+  border-bottom: #b6b6b0 10px solid;
+}
+
+.logo {
+  background-image: url("../img/LogoNoteLines.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100%;
+}
+
+.container {
+  text-align: center;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.introduction {
+  background-color: rgba(50, 50, 50, 0.1);
+  border-radius: 30px;
+}
+
+.introduction-heading {
+  font-size: larger;
+}
+
+.introduction-text {
+  font-size: large;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  justify-items: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.custom-button {
+    position: relative;
+    padding: 20px;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    background-color: #333;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    height: 150px;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-button span {
+    z-index: 2;
+}
+
+.custom-button .music-sheet {
+    position: absolute;
+    color: white;
+    width: 100%; 
+    height: 100%;
+    z-index: 1;
+    opacity: 0.5;
+}
+
+.custom-button:hover {
+    transform: scale(1.05);
+}
+
+.simple-read {
+  background-color: #ca84a9;
+  color: black;
+}
+
+.chord-read {
+  background-color: #8a85c8;
+  color: black;
+}
+
+.full-read {
+  background-color: #86c2ca;
+  color: black;
+}
+
+.latency-test {
+  background-color: #84c990;
+  color: black;
+}
+
+.back-button {
+  bottom: 20px;
+  left: 20px;
+  width: 10%;
+  position: absolute;
+  background-color: #ed8f8f;
+  color: black;
+}
+
 
 #note-container {
   position: relative;

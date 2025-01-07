@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Full Piece Practice</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
     <link href="{{ url_for('static', filename='styles/style.css')}}" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
     <script src="{{ url_for('static', filename='js/abcjs-basic.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/fullReadScript.js') }}" defer></script>
 </head>
 <body>
-    <h1>Display Full piece here</h1>
+    <div id="banner" class="banner">
+        <div id="logo" class="logo"></div>
+    </div>
     <div id="highlightBox"></div>
     <label for="transpose-select">Transposition:</label>
     <select id="transpose-select">
@@ -42,6 +45,9 @@
     </select>
     <div id="note-container">{{ abc }}</div>
     <button id="start-stop-button">Start</button>
-    <button id="back-button" onclick="window.location.href = 'index' ;">Back</button>
+    <div class="custom-button back-button" onclick="window.location.href = 'index' ;">
+        <span>Back</span>
+        <div class="music-sheet" id="back-button-music"></div>
+    </div>
 </body>
 </html>

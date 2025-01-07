@@ -1,11 +1,13 @@
-import { notes, noteContainer, transposeInterval, socket, addEventListeners, transpose } from "./utils.js";
+import { notes, noteContainer, transposeInterval, socket, addEventListeners, transpose, abcInBackButton } from "./utils.js";
 const chordTypes = ["major", "minor", "sus2", "sus4", "diminished", "augmented"];
+const validRootNotes = notes.slice(12, notes.length - 20);
 let randomChord = { root: "", type: "", notes: [] };
 let detectedChord = [];
 let correctCounter = 0;
 let isPaused = false;
 
 addEventListeners();
+abcInBackButton();
 socket.emit("start_audio_stream");
 socket.on("chord_detected", (data) => {
     if (!isPaused) {
@@ -14,7 +16,7 @@ socket.on("chord_detected", (data) => {
 });
 
 function getRandomChord() {
-    const root = notes[Math.floor(Math.random() * 12)];
+    const root = validRootNotes[Math.floor(Math.random() * validRootNotes.length)];
     const type = chordTypes[Math.floor(Math.random() * chordTypes.length)];
     const chordNotes = generateChordNotes(root, type);
     console.log(root + type);
@@ -42,19 +44,54 @@ function generateChordNotes(root, type) {
 }
 
 function renderChord(chord) {
-    let abcString = "X:1\nT:Chord Practice\nM:4/4\nL:1/1\nK:C\n";
-    abcString += "|[";
+    let abcString = "X:1\nM:4/4\nL:1/1\nK:C\n";
+
+    // Separate notes into treble and bass voices
+    let trebleNotes = [];
+    let bassNotes = [];
 
     chord.notes.forEach(note => {
-        abcString += note;
+        // Determine whether the note is above or below middle C
+        console.log("indes of note: " + notes.indexOf(note))
+        console.log("index of C4: " + notes.indexOf("C"));
+        if (notes.indexOf(note) >= notes.indexOf("C")) { 
+            trebleNotes.push(note);
+        } else {
+            bassNotes.push(note);
+        }
     });
-    abcString += "]|";
 
+    // Handle the treble voice
+    if (trebleNotes.length > 0) {
+        abcString += "V:1 clef=treble\n|[";
+        trebleNotes.forEach(note => {
+            abcString += note;
+        });
+        abcString += "]|\n";
+    } else {
+        // Add a whole rest if there are no treble notes
+        abcString += "V:1 clef=treble\n|z1|\n";
+    }
+
+    // Handle the bass voice
+    if (bassNotes.length > 0) {
+        abcString += "V:2 clef=bass\n|[";
+        bassNotes.forEach(note => {
+            abcString += note;
+        });
+        abcString += "]|\n";
+    } else {
+        // Add a whole rest if there are no bass notes
+        abcString += "V:2 clef=bass\n|z1|\n";
+    }
+
+    // Render the ABC string
     ABCJS.renderAbc(noteContainer.id, abcString, {
         add_classes: true,
-        staffwidth: 500
+        scale: 4
     });
 }
+
 
 randomChord = getRandomChord();
 renderChord(randomChord);
@@ -94,6 +131,9 @@ function colorChord(isChordCorrect) {
         color = "green";
     }
     chordElements[0].style.color = color;
+    if(chordElements[1]){
+        chordElements[1].style.color = color;
+    }
 }
 
 function isChordAccurate(chord) {

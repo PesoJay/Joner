@@ -1,9 +1,10 @@
+import { socket, abcInBackButton } from "./utils.js";
 let latencyInMs = 0;
 let startTime = 0;
 let endTime = 0;
 let testRunning = false;
 
-const socket = io();
+abcInBackButton();
 window.addEventListener("beforeunload", () => {
     socket.emit("stop_audio_stream");
 });

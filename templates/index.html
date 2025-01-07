@@ -4,14 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Joner</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
     <link href="{{ url_for('static', filename='styles/style.css')}}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/abcjs-basic.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/indexScript.js') }}"></script>
 </head>
 <body>
-    <h1>Main Page</h1>
-    <button onclick="window.location.href = 'simpleReadPractice' ;">Simple Read Practice</button>
-    <button onclick="window.location.href = 'chordReadPractice' ;">Chord Read Practice</button>
-    <button onclick="window.location.href = 'fullReadPractice' ;">Full Read Practice</button>
-    <button onclick="window.location.href = 'latencyTest' ;">Latency Test</button>
-
+    <div id="banner" class="banner">
+        <div id="logo" class="logo"></div>
+    </div>
+    <div class="container">
+        <fieldset class="introduction">
+            <legend class="introduction-heading">Joner - Practice Sightreading</legend>
+            <p class="introduction-text">
+            Joner is a Web App designed to help you practice Sightreading in a way that best suits your needs.
+            Wether you need to practice playing chords, want to dive into randomly generated pieces, or if you just want to practice hitting single notes on sight: Joner has you covered!
+            If you want to learn more about each mode, just hover over the button and read the tutorial.
+            Before starting a Full Read Practice Session be sure to do the latency test, for better accuracy.
+            </p>
+        </fieldset>
+        <br>
+        <div class="button-grid">
+            <div class="custom-button simple-read" onclick="window.location.href = 'simpleReadPractice' ;">
+                <span>Simple Read Practice</span>
+                <div class="music-sheet" id="simple-read-music"></div>
+            </div>
+            <div class="custom-button chord-read" onclick="window.location.href = 'chordReadPractice' ;">
+                <span>Chord Read Practice</span>
+                <div class="music-sheet" id="chord-read-music"></div>
+            </div>
+            <div class="custom-button full-read" onclick="window.location.href = 'fullReadPractice' ;">
+                <span>Full Read Practice</span>
+                <div class="music-sheet" id="full-read-music"></div>
+            </div>
+            <div class="custom-button latency-test" onclick="window.location.href = 'latencyTest' ;">
+                <span>Latency Test</span>
+                <div class="music-sheet" id="latency-test-music"></div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
