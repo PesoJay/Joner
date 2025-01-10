@@ -108,8 +108,8 @@ def full_read_practice():
         key = request.form["key"]
     else:
         etude.set_tempo(choice(["very_slow"]))
-        mode = "maj"
-        key = "C"
+        mode = "random"
+        key = "random"
     
     etude.set_key(key, mode)
     etude.title = ""

@@ -28,6 +28,7 @@ function showTutorial(mode) {
                     
                     <label for="mode">Mode:</label>
                     <select id="mode" name="mode" onchange="updateKeyOptions()">
+                        <option value="random">Random</option>  
                         <option value="maj">Major</option>
                         <option value="min">Minor</option>
                     </select>
@@ -59,14 +60,17 @@ function updateKeyOptions() {
 
     const majorKeys = ["C", "G", "D", "A", "E", "B", "F", "Bb", "Eb", "Ab", "Db"];
     const minorKeys = ["A", "E", "B", "F#", "C#", "G#", "D", "G", "C", "F", "Bb"];
+    const randomKeys = ["random"];
 
     keyDropdown.innerHTML = "";
 
     let keys = [];
     if(mode === "maj") {
         keys = majorKeys;
-    } else {
+    } else if (mode === "min") {
         keys = minorKeys;
+    } else {
+        keys = randomKeys;
     }
     keys.forEach((key) => {
         const option = document.createElement("option");
