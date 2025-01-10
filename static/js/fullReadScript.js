@@ -1,4 +1,4 @@
-import { noteContainer, transposeInterval, socket, addEventListeners, transpose, abcInBackButton } from "./utils.js";
+import { notes, noteContainer, transposeInterval, socket, addEventListeners, transpose, abcInBackButton } from "./utils.js";
 document.addEventListener("DOMContentLoaded", () => {
     const highlightBox = document.getElementById("highlightBox");
     const startStopButton = document.getElementById("start-stop-button");
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let totalPauseDuration = 0;
     let latency = 100; //set this to the latency test result
     let abcString = noteContainer.textContent;
-    //let abcString = "X:1\nT:Example\nM:4/4\nL:1/4\nQ:1/4=60\nK:Cmaj\n";
+    //let abcString = "X:1\nT:Example\nM:4/4\nL:1/4\nQ:1/4=60\nK:Dmin\n";
     let randomlyGeneratedMusic = "C D E F| F E D C|"; //replace with result from etudes-generator
     let visualObj = null;
 
@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function setUp(){
         addEventListeners();
         abcInBackButton();
-        //abcString = cleanGeneratedAbcString(abcString);
+        abcString = cleanGeneratedAbcString(abcString);
         //abcString = abcString + randomlyGeneratedMusic; //remove for actual random music
         visualObj = ABCJS.renderAbc(noteContainer.id, abcString, {
             add_classes: true,
@@ -127,6 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             scale: 1.3
         });
+        console.log(visualObj[0].getKeySignature().accidentals);
         highlightBox.style.display = "block";
         noteContainer.appendChild(highlightBox);
     }
@@ -142,7 +143,29 @@ document.addEventListener("DOMContentLoaded", () => {
         let noteString = abcString.slice(startChar, endChar);
         noteString = noteString.replace(/[0-9\/]/g, "");
         noteString = noteString.trim();
+        noteString = shiftExpectedNoteByKey(noteString);
         return noteString;
+    }
+
+    function shiftExpectedNoteByKey(note) {
+        let noteIndex = notes.indexOf(note);
+        const accidentals = visualObj[0].getKeySignature().accidentals;
+        accidentals.forEach((accidental) => {
+            if(getNoteChar(note) === getNoteChar(accidental.note)) {
+                if(accidental.acc == "sharp") {
+                    noteIndex++;
+                } else {
+                    noteIndex--;
+                }
+            }
+        });
+        return notes[noteIndex];
+    }
+
+    function getNoteChar(note) {
+        note = note.replace(/[,']/g, "");
+        note = note.toLowerCase();
+        return note;
     }
 
     function getPlayedNote(map) {

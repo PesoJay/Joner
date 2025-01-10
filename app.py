@@ -101,18 +101,21 @@ def chord_read_practice():
 @app.route("/fullReadPractice")
 def full_read_practice():
     global etude, yin_mode
+    yin_mode = True
     if request.method == "POST":
         etude.tempo = ["", request.form["tempo"]]
+        mode = request.form["mode"]
+        key = request.form["key"]
     else:
         etude.set_tempo(choice(["very_slow"]))
-    yin_mode = True
+        mode = "maj"
+        key = "C"
+    
+    etude.set_key(key, mode)
     etude.title = ""
     etude.focus = "air_column"
     etude.length = "2"
     etude.metre = "4/4"
-    mode = "maj"
-    key = "C"
-    etude.set_key(key, mode)
     etude.ambitus = [0, 16]
     generator: Generator = Generator(etude)
     etude = generator.generate_etude()
