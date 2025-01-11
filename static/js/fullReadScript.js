@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const highlightBox = document.getElementById("highlightBox");
     const startStopButton = document.getElementById("start-stop-button");
     const beat = new Audio("/static/audio/countdown.wav");
+    const latency = parseInt(localStorage.getItem("latencyInMs"), 10) || 100;
     let isPaused = true;
     let isFinished = false;
     let firstEvent = true;
@@ -10,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let startTime = 0;
     let pauseStartTime = 0;
     let totalPauseDuration = 0;
-    let latency = 100; //set this to the latency test result
     let abcString = noteContainer.textContent;
     //let abcString = "X:1\nT:Example\nM:4/4\nL:1/4\nQ:1/4=60\nK:Dmin\n";
     let randomlyGeneratedMusic = "C D E F| F E D C|"; //replace with result from etudes-generator
@@ -113,6 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function setUp(){
+        console.log("Latency: " + latency);
         addEventListeners();
         abcInBackButton();
         abcString = cleanGeneratedAbcString(abcString);

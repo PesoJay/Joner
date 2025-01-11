@@ -14,7 +14,9 @@ socket.on("note_detected", (data) => {
         console.log(`Detected Note: ${data.note}`);
         endTime = Date.now()
         testRunning = false;
-        document.getElementById("latency-counter").textContent = endTime - startTime;
+        latencyInMs = endTime - startTime;
+        document.getElementById("latency-counter").textContent = latencyInMs;
+        localStorage.setItem("latencyInMs", latencyInMs);
         socket.emit("stop_audio_stream");  
     }
 });
