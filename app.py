@@ -91,11 +91,26 @@ def simple_read_practice():
     yin_mode = True
     return render_template("simpleReadPractice.html")
 
+@app.route("/startChordPractice", methods=["GET", "POST"])
 @app.route("/chordReadPractice")
 def chord_read_practice():
     global yin_mode
     yin_mode = False
-    return render_template("chordReadPractice.html")
+    if request.method == "POST":
+        if request.form["mode"] == "random":
+            mode = choice(["maj", "min"])
+            if mode == "maj":
+                key = choice(["C", "G", "F", "D", "Bb", "A", "Eb", "E", "Ab", "B", "Db"])
+            else:
+                key = choice(["A", "E", "D", "B", "G", "F#", "C", "F", "C#", "Bb", "G#"])
+        else:
+            mode = request.form["mode"]
+            key = request.form["key"]
+    else:
+        key = "C"
+        mode = "maj"
+        
+    return render_template("chordReadPractice.html", key=key, mode=mode)
 
 @app.route("/startFullReadPractice", methods=["GET", "POST"])
 @app.route("/fullReadPractice")

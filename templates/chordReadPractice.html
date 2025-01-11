@@ -11,6 +11,8 @@
     <script type="module" src="{{ url_for('static', filename='js/chordReadScript.js') }}" defer></script>
 </head>
 <body>
+    <div id="key" class="invisible">{{ key }}</div>
+    <div id="mode" class="invisible">{{ mode }}</div>
     <div id="banner" class="banner">
         <div id="logo" class="logo"></div>
     </div>
@@ -43,7 +45,7 @@
         <option value="11">B | 11 Semitones Up</option>
         <option value="12">C | Octave Up</option>
     </select>
-    <div id="note-container"></div>
+    <div id="note-container" class="chord-note-container"></div>
     <div class="custom-button back-button" onclick="window.location.href = 'index' ;">
         <span>Back</span>
         <div class="music-sheet" id="back-button-music"></div>

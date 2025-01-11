@@ -5,6 +5,14 @@ export const notes = [
     "c", "^c", "d", "^d", "e", "f", "^f", "g", "^g", "a", "^a", "b",
     "c'", "^c'", "d'", "^d'", "e'", "f'", "^f'", "g'", "^g'", "a'", "^a'", "b'",
 ];
+export const notesFlat = [
+    "C,,", "_D,,", "D,,", "_E,,", "E,,", "F,,", "_G,,", "G,,", "_A,,", "A,,", "_B,,", "B,,",
+    "C,", "_D,", "D,", "_E,", "E,", "F,", "_G,", "G,", "_A,", "A,", "_B,", "B,",
+    "C", "_D", "D", "_E", "E", "F", "_G", "G", "_A", "A", "_B", "B",
+    "c", "_d", "d", "_e", "e", "f", "_g", "g", "_a", "a", "_b", "b",
+    "c'", "_d'", "d'", "_e'", "e'", "f'", "_g'", "g'", "_a'", "a'", "_b'", "b'",
+];
+
 export const noteContainer = document.getElementById("note-container");
 export const transposeSelect = document.getElementById("transpose-select");
 export const socket = io();

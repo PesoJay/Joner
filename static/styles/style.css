@@ -92,13 +92,16 @@ body {
 }
 
 .tutorial-display {
-  grid-column: 2; /* Center column */
-  grid-row: span 2; /* Spans both rows */
+  display: flex;
+  flex-direction: column;
+  grid-column: 2;
+  grid-row: span 2;
   background-color: #eaeaea;
   border: 2px solid #ccc;
   border-radius: 10px;
   text-align: center;
   overflow-y: auto;
+  padding: 10px;
 }
 
 .tutorial-display h2 {
@@ -157,12 +160,16 @@ body {
   color: black;
 }
 
+.invisible {
+  display: none;
+}
+
 #start-stop-button {
   text-align: center;
   align-content: center;
   border-radius: 10px;
   font-weight: bold;
-  font-size: 50px;
+  font-size: 35px;
   background-color: #8a85c8;
   width: 10%;
   height: 7vh;
@@ -170,6 +177,10 @@ body {
 
 #note-container {
   position: relative;
+}
+
+.chord-note-container {
+  margin-top: -150px;
 }
 
 #highlightBox {
