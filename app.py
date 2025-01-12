@@ -131,7 +131,7 @@ def full_read_practice():
     etude.focus = "air_column"
     etude.length = "2"
     etude.metre = "4/4"
-    etude.ambitus = [0, 16]
+    etude.ambitus = [0, 15]
     generator: Generator = Generator(etude)
     etude = generator.generate_etude()
     abc: str = convert_to_abc(etude)

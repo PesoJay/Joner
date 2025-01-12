@@ -109,6 +109,10 @@ body {
   margin-bottom: 10px;
 }
 
+#tutorial-text-container {
+  margin-bottom: 10%;
+}
+
 .simple-read {
   background-color: #ca84a9;
   color: black;
@@ -191,4 +195,9 @@ body {
   width: 10px;
   height: 10px;
   display: none;
+}
+
+#latency-counter {
+  font-size: 50px;
+  font-weight: bold;
 }

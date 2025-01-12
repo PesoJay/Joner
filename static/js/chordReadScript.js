@@ -1,7 +1,5 @@
 import { notes, notesFlat, noteContainer, transposeInterval, socket, addEventListeners, transpose, abcInBackButton } from "./utils.js";
 const chordTypes = ["major", "minor", "sus2", "sus4", "diminished"];
-//const possibleRootNotes = notes.slice(12, notes.length - 24);
-//const possibleRootNotesFlat = notesFlat.slice(12, notes.length -24);
 const key = document.getElementById("key").textContent;
 const mode = document.getElementById("mode").textContent;
 const keyChords = {
@@ -11,6 +9,11 @@ const keyChords = {
 let possibleRootNotes = [];
 let notesList = notes;
 let flatMode = false;
+let randomChord = { root: "", type: "", notes: [] };
+let detectedChord = [];
+let correctCounter = 0;
+let isPaused = false;
+
 
 if(mode == "maj"){
     if (key.length == 2 || key == "F"){
@@ -38,11 +41,6 @@ if(mode == "maj"){
 const scaleNotes = getScaleNotes(key, mode);
 
 console.log("Selected Key: " + key + mode);
-let randomChord = { root: "", type: "", notes: [] };
-let detectedChord = [];
-let correctCounter = 0;
-let isPaused = false;
-
 addEventListeners();
 abcInBackButton();
 socket.emit("start_audio_stream");

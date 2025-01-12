@@ -2,7 +2,7 @@ from typing import Optional
 from etude import Note, Key
 from math import floor
 
-YIN_CHUNK = 512
+YIN_CHUNK = 700
 CHORD_CHUNK = 4096
 SAMPLE_RATE = 44100
 

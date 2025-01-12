@@ -1,5 +1,6 @@
 import { notes, noteContainer, transposeInterval, socket, addEventListeners, transpose, abcInBackButton } from "./utils.js";
-const validRandomNotes = notes.slice(17, notes.length - 8);
+const validRandomNotes = notes.slice(24, notes.length - 8);
+console.log(validRandomNotes);
 let randomNote = "";
 let detectedNote = "";
 let correctCounter = 0;

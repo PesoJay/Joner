@@ -36,7 +36,7 @@ function showTutorial(mode) {
         let tutorialText = "";
         switch (mode) {
             case "simpleReadPractice":
-                tutorialHeading = "Simple Read Practice Mode";
+                tutorialHeading = "Practice identifying and playing single notes by sight.";
                 tutorialText = `In this Practice mode you will be shown a single note at a time.
                 Try to play that note, if you fail your played note will show up in red, if you succeed the note will light up green and your score will increase.
                 You can use the transposition tool to transpose your instrument if it's not in C.
@@ -44,6 +44,12 @@ function showTutorial(mode) {
                 break;
             case "chordReadPractice":
                 tutorialHeading = "Practice identifying and playing chords by sight.";
+                tutorialText = `In this Practice mode you will be shown one chord at a time.
+                Try to play that chord, if you fail the chord will show up in red, if you succeed the chord will light up green and your score will increase.
+                It doesn't matter in which octave you play the chord, as long as its the same chord displayed it will be counted as correct.
+                You can use the transposition tool to transpose your instrument if it's not in C.
+                You can select a Key in which you want to practice below. All chords will be diatonic to that key.
+                `;
                 formContainer.innerHTML = `
                     <form method="POST" action="/startChordPractice">                  
                         <label for="mode">Mode:</label>
@@ -62,7 +68,15 @@ function showTutorial(mode) {
                 updateKeyOptions();
                 break;
             case "fullReadPractice":
-                tutorialHeading = "Generate full sheet music to sightread. Adjust tempo and key below.";
+                tutorialHeading = "Practice playing a full piece.";
+                tutorialText = `In this Practice mode you will be shown a randomly generated etude.
+                Once you press Start (or the spacebar) you will be counted into the piece and after the 4-beat count in the piece will start.
+                Try to play the Piece, if you do well the notes will light up green, indicating that you are playing correctly, if they are red, then you played those notes wrong.
+                Start with slower tempos and easier keys, then work your way up.
+                If you get only red notes you might need to retake the latency test, or your instrument is not in tune.
+                You can use the transposition tool to transpose your instrument if it's not in C.
+                Note Range (inclusive): C4 - C6             
+                `;
                 formContainer.innerHTML = `
                     <form method="POST" action="/startFullReadPractice">
                         <label for="tempo">Tempo (BPM):</label>
@@ -85,6 +99,10 @@ function showTutorial(mode) {
                 break;
             case "latencyTest":
                 tutorialHeading = "Measure input latency to ensure accurate practice results.";
+                tutorialText = `Perform this test to determine the latency of your system.
+                A score of <200ms is good, scores above that could cause some problems, but should still be usable.
+                The instructions for the test can be found on the test site itself.
+                `
                 break;
             default:
                 tutorialHeading = "Hover over a button to see the tutorial.";

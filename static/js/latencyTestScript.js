@@ -15,7 +15,7 @@ socket.on("note_detected", (data) => {
         endTime = Date.now()
         testRunning = false;
         latencyInMs = endTime - startTime;
-        document.getElementById("latency-counter").textContent = latencyInMs;
+        document.getElementById("latency-counter").textContent = latencyInMs + "ms";
         localStorage.setItem("latencyInMs", latencyInMs);
         socket.emit("stop_audio_stream");  
     }
