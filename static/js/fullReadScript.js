@@ -12,8 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let pauseStartTime = 0;
     let totalPauseDuration = 0;
     let abcString = noteContainer.textContent;
-    //let abcString = "X:1\nT:Example\nM:4/4\nL:1/4\nQ:1/4=60\nK:Dmin\n";
-    let randomlyGeneratedMusic = "C D E F| F E D C|"; //replace with result from etudes-generator
     let visualObj = null;
 
     let practiceStates = [];
@@ -30,16 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setUp();
 
-    document.addEventListener('keydown', event => {
-        if (event.code === 'Space') {
-            startStopPractice();
-        }
-    });
-
-    window.addEventListener("beforeunload", () => {
-        socket.emit("stop_audio_stream");
-    });
-
     socket.on("note_detected", (data) => {
         if (!isPaused && !isFinished) {
             console.log("note detected!");
@@ -48,14 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
             addToDetectedNotes(transposedNote, eventNoteWasPlayedInIndex);
         }
     });
-
-    function findEventNoteWasPlayedIn() {
-        for (let i = practiceStates.length-1; i >= 0; i--) {
-            if(noteWasPlayedDuringEvent(i)){
-                return i;
-            }
-        }
-    }
 
     const timingCallbacks = new ABCJS.TimingCallbacks(visualObj[0], {
         extraMeasuresAtBeginning: 1,
@@ -76,6 +56,14 @@ document.addEventListener("DOMContentLoaded", () => {
             firstEvent = false;
         }
     });
+
+    function findEventNoteWasPlayedIn() {
+        for (let i = practiceStates.length-1; i >= 0; i--) {
+            if(noteWasPlayedDuringEvent(i)){
+                return i;
+            }
+        }
+    }
 
     function gradeNote(index){
         setTimeout(() => {
@@ -115,9 +103,13 @@ document.addEventListener("DOMContentLoaded", () => {
     function setUp(){
         console.log("Latency: " + latency);
         addEventListeners();
+        document.addEventListener('keydown', event => {
+            if (event.code === 'Space') {
+                startStopPractice();
+            }
+        });
         abcInBackButton();
         abcString = cleanGeneratedAbcString(abcString);
-        //abcString = abcString + randomlyGeneratedMusic; //remove for actual random music
         visualObj = ABCJS.renderAbc(noteContainer.id, abcString, {
             add_classes: true,
             staffwidth: 1000,
@@ -128,7 +120,6 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             scale: 1.3
         });
-        console.log(visualObj[0].getKeySignature().accidentals);
         highlightBox.style.display = "block";
         noteContainer.appendChild(highlightBox);
     }
@@ -181,10 +172,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 mostCommonNoteCount = value;
             }
         }
-        if(mostCommonNoteCount < 3){
+        if(mostCommonNoteCount < 1){
             return "z"; //Assumes player didn't play during event, so returns a rest
         }
-        if(mostCommonNoteCount / numberOfSamples > 0.5){
+        if(mostCommonNoteCount / numberOfSamples >= 0.5){
             return mostCommonNote;
         }
         return "inaccurate result";

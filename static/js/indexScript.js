@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 let lastMode = "";
 
-
 function showTutorial(mode) {
     if(lastMode != mode){
 
@@ -80,7 +79,7 @@ function showTutorial(mode) {
                 formContainer.innerHTML = `
                     <form method="POST" action="/startFullReadPractice">
                         <label for="tempo">Tempo (BPM):</label>
-                        <input type="number" id="tempo" name="tempo" min="40" max="240" placeholder="60">
+                        <input type="number" id="tempo" name="tempo" min="40" max="100" value="60">
                         
                         <label for="mode">Mode:</label>
                         <select id="mode" name="mode" onchange="updateKeyOptions()">

@@ -15,20 +15,27 @@ def callback(in_data, frame_count, time_info, status):
         
         if rms > 0.01:
             if config.yin_mode:
-                frequency = get_pitch_yin(data, SAMPLE_RATE)
-                if frequency:
-                    note = find_nearest_note(frequency)
-                    if note: 
-                        config.socketio.emit("note_detected", {"note": note}, namespace="/")
+                yin_callback(data)
             else:
-                frequencies = get_note_frequencies(data, SAMPLE_RATE)
-                notes = find_notes_in_chord(frequencies)
-                if notes:
-                    chord = identify_chord(notes)
-                    if chord:
-                        config.socketio.emit("chord_detected", {"chord": chord}, namespace="/")
-    
+                chord_callback(data)
+
     return (in_data, pyaudio.paContinue)
+
+def chord_callback(data):
+    frequencies = get_note_frequencies(data, SAMPLE_RATE)
+    notes = find_notes_in_chord(frequencies)
+    if notes:
+        chord = identify_chord(notes)
+        if chord:
+            config.socketio.emit("chord_detected", {"chord": chord}, namespace="/")
+
+def yin_callback(data):
+    frequency = get_pitch_yin(data, SAMPLE_RATE)
+    if frequency:
+        note = find_nearest_note(frequency)
+        if note: 
+            config.socketio.emit("note_detected", {"note": note}, namespace="/")
+
 
 def audio_stream():
     p = pyaudio.PyAudio()

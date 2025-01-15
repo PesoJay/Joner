@@ -20,7 +20,7 @@ The web app features 3 distinct Modes that can be used to practice in a way that
 	- Best suited for Monophonic instruments
 	- Note Range: C4 - D#6
 - ### Chord Read Practice
-	- Practice reading and playing one chord at a time. (Chords you can practice are: Major, Minor, sus2, sus4, diminished, augmented)
+	- Practice reading and playing one chord at a time. (Chords you can practice are: Major, Minor, sus2, sus4, diminished)
 	- Best suited for Polyphonic instruments
 	- Note Range: C3 - F#5
 - ### Full Read Practice
